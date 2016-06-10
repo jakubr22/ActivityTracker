@@ -115,7 +115,7 @@ public class CaloriesCounterActivity extends AppCompatActivity {
 
     public void activityRecording(View view) {
         Button button = (Button)findViewById(R.id.button);
-        if(licz=false) {
+        if(licz==false) {
             button.setText("Stop");
             licz=true;
             GPS gps = GPS.getGPS();      //<-- tutaj przechowywana jest lista zawierajaca obiekty Point ktore przechowuja informacje o lokalizacji
