@@ -81,6 +81,10 @@ public class GPS extends Thread implements LocationListener {
         return loc.getLatitude();
 
     }
+    public float getSpeed(){
+        return loc.getSpeed();
+    }
+
 
     public String getBestProvider() {
         return bestProvider;

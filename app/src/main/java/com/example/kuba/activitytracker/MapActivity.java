@@ -67,7 +67,7 @@ public class MapActivity extends AppCompatActivity implements IActivity {
     public void refresh() {
         GeoPoint punkt = new GeoPoint(gps.getLoc().getLatitude(), gps.getLoc().getLongitude());
         myPath.addPoint(punkt);
-        mapController.setCenter(punkt);
+        mapController.animateTo(punkt);
         currentLocMarker.setPosition(punkt);
         currentLocMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         mapView.getOverlays().add(currentLocMarker);

@@ -45,7 +45,7 @@ public class GPS_Activity extends AppCompatActivity implements IActivity{
 
     public void refresh() {
         history.setText(history.getText() + "\n" + gps.getLongitude() + "\\" + gps.getLatitude());
-        provider.setText("Dostawca: " + gps.getBestProvider());
+        provider.setText("speed: " + gps.getSpeed());
         longitude.setText("Dlugość: " + gps.getLongitude());
         latitude.setText("Szerokość: " + gps.getLatitude());
     }
