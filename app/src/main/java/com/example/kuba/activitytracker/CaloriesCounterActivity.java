@@ -129,7 +129,9 @@ public class CaloriesCounterActivity extends AppCompatActivity {
                 userWeight = Double.parseDouble(weight);
             }
 
-            double calories=0;
+            double calories=0, currentSpeed, averageSpeed=0, distanse = 0, time =0;
+            TextView aktualnaPredkosc = (TextView)findViewById(R.id.textView12);
+
             for (Point i : gps.getHistory()){
                 if (prev!= i) {
                     calories+=getKcalNaKgNaSecBiegu(i.getSpeed()) * getTimeInterval(prev, i) * userWeight  ;
@@ -137,6 +139,11 @@ public class CaloriesCounterActivity extends AppCompatActivity {
                 }
             }
             TextView kalorie = (TextView)findViewById(R.id.textView11);
+
+            TextView sredniaPredkosc = (TextView)findViewById(R.id.textView13);
+            TextView przebytyDystans = (TextView)findViewById(R.id.textView14);
+            TextView czasTrwania = (TextView)findViewById(R.id.textView15);
+
             kalorie.setText(String.valueOf(calories) + " kcal");
 
 
@@ -147,5 +154,61 @@ public class CaloriesCounterActivity extends AppCompatActivity {
             //GPS.getGPS().cleanHistory();
         }
 
+    }
+
+    String secondsToTimeFormat (int timeInterval){ //Funkcja zmieniajaca interwal czasowy wyrazony w sekundach
+        String time="";                   //na format hh:mm:ss aktywnosci
+        int hours, minutes, seconds, pomTimeInterval = timeInterval;
+        if(timeInterval > 0)
+        {
+            if(timeInterval%3600 != 0)
+            {
+                pomTimeInterval -= (timeInterval%3600);
+                hours = pomTimeInterval /3600;
+                if(hours<10){
+                    time = "0" + hours + "h";
+                }
+                else{
+                    time = hours + "h";
+                }
+                timeInterval = timeInterval%3600; //pozostale minuty + sekundy
+
+                if(timeInterval%60 != 0){
+                    pomTimeInterval = timeInterval;
+                    pomTimeInterval -= (timeInterval%60);
+                    minutes = pomTimeInterval/60;
+                    if(minutes < 10){
+                        time = time + "0" + minutes+"m";
+                    }
+                    else{
+                        time = time + minutes + "m";
+                    }
+                    timeInterval = timeInterval%60; //pozostale sekundy
+
+                    if(timeInterval<10){
+                        time = time + "0" +timeInterval + "s";
+                    }
+                    else{
+                        time = time + timeInterval + "s";
+                    }
+                    return time;
+                }
+                else{
+                    minutes = timeInterval/60;
+                    time = time + minutes + "m00s";
+                    return time;
+                }
+            }
+            else {
+                hours = timeInterval / 3600;
+                time = hours + "hh00m00s";
+                return time;
+            }
+        }
+        else
+        {
+            time = "00h00m00s";
+            return time;
+        }
     }
 }
