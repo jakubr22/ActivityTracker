@@ -120,7 +120,7 @@ public class CaloriesCounterActivity extends AppCompatActivity {
             licz=true;
             GPS gps = GPS.getGPS();      //<-- tutaj przechowywana jest lista zawierajaca obiekty Point ktore przechowuja informacje o lokalizacji
                                         // z Location mozna duzo informacji wyciagnąc, np: getSpeed
-           Point prev = gps.getHistory().get(1);
+
 
 
             String weight = sharedPreferences.getString("weight","");
@@ -129,23 +129,40 @@ public class CaloriesCounterActivity extends AppCompatActivity {
                 userWeight = Double.parseDouble(weight);
             }
 
-            double calories=0, currentSpeed, averageSpeed=0, distanse = 0, time =0;
-            TextView aktualnaPredkosc = (TextView)findViewById(R.id.textView12);
+            double calories=0, currentSpeed =0, averageSpeed=0, distanse = 0;
+            int time =0;
 
+
+            Point prev = gps.getHistory().get(0);
             for (Point i : gps.getHistory()){
                 if (prev!= i) {
                     calories+=getKcalNaKgNaSecBiegu(i.getSpeed()) * getTimeInterval(prev, i) * userWeight  ;
+                    currentSpeed = calculateSpeed(getDistanceBetweenPoints(prev, i),getTimeInterval(prev, i));
+                    averageSpeed += currentSpeed;
+                    distanse += getDistanceBetweenPoints(prev, i);
+                    time += getTimeInterval(prev, i);
                     prev = i;
+
                 }
             }
+            averageSpeed /= gps.getHistory().size();
+            distanse /= 1000;
+
             TextView kalorie = (TextView)findViewById(R.id.textView11);
-
-            TextView sredniaPredkosc = (TextView)findViewById(R.id.textView13);
-            TextView przebytyDystans = (TextView)findViewById(R.id.textView14);
-            TextView czasTrwania = (TextView)findViewById(R.id.textView15);
-
             kalorie.setText(String.valueOf(calories) + " kcal");
 
+            TextView aktualnaPredkosc = (TextView)findViewById(R.id.textView12);
+            aktualnaPredkosc.setText(String.valueOf(currentSpeed) + " km/h");
+
+            TextView sredniaPredkosc = (TextView)findViewById(R.id.textView13);
+            sredniaPredkosc.setText(String.valueOf(averageSpeed) + " km/h");
+
+            TextView przebytyDystans = (TextView)findViewById(R.id.textView14);
+            przebytyDystans.setText(String.valueOf(distanse) + " km");
+
+            TextView czasTrwania = (TextView)findViewById(R.id.textView15);
+            String czas = secondsToTimeFormat(time);
+            czasTrwania.setText(czas);
 
         }
         else {
