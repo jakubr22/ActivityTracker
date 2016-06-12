@@ -28,7 +28,7 @@ def interpolateList(x0,y0,x1,y1):
     
 if __name__ == "__main__":
         SIMULATE=False;
-        step = 5;
+        step = 15;
         HOST = "localhost"
         PORT = "5554"
         password = "auth activity\r\n".encode('ascii')
