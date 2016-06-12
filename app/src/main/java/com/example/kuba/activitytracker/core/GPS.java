@@ -22,13 +22,13 @@ public class GPS extends Thread implements LocationListener {
     private Location loc;
     private String bestProvider;
     static private ArrayList<Point> history = new ArrayList<>();
-    private GPS_Activity GPS_actv;
     private List<IActivity> ActivityList;
+    private boolean logHistory = false;
 
     @SuppressWarnings("static-access")
     public GPS(LocationManager lm) {
 
-        ActivityList = new LinkedList<IActivity>();
+        ActivityList = new LinkedList<>();
         cr = new Criteria();
         this.lm = lm;
         refresh();
@@ -94,7 +94,7 @@ public class GPS extends Thread implements LocationListener {
         bestProvider = lm.getBestProvider(cr, true);
         if (bestProvider != null) {
             loc = lm.getLastKnownLocation(bestProvider);
-            history.add(new Point(loc));
+            history.add(new Point(loc,logHistory));
         }
 
     }
@@ -125,10 +125,6 @@ public class GPS extends Thread implements LocationListener {
         ActivityList.remove((ac));
     }
 
-    public void setGPS_actv(GPS_Activity gPS_actv) {
-        GPS_actv = gPS_actv;
-    }
-
     public Location getLoc() {
         return loc;
     }
@@ -138,8 +134,7 @@ public class GPS extends Thread implements LocationListener {
     }
 
 
-
-
-
-
+    public void setLogHistory(boolean logHistory) {
+        this.logHistory = logHistory;
+    }
 }
