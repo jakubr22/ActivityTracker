@@ -16,7 +16,7 @@ import java.util.Date;
 public class CaloriesCounterActivity extends AppCompatActivity {
     double przebytyDystans = 0, predkoscAktualna, predkoscSrednia;
     int spaloneKalorie=0, czasTrwaniaAktywnosci=0;
-    private boolean licz=false;
+    private boolean licz=false, pause=false;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -113,10 +113,23 @@ public class CaloriesCounterActivity extends AppCompatActivity {
         else return 15.0;
     }
 
+    public void activityPause(View view){
+        Button button = (Button)findViewById(R.id.pause);
+        if (pause){
+            button.setText("włącz");
+        }
+        else{
+            button.setText("wyłącz");
+        }
+        GPS.getGPS().setLogHistory(pause);
+        pause=!pause;
+    }
+
     public void activityRecording(View view) {
         Button button = (Button)findViewById(R.id.button);
         if(licz==false) {
             button.setText("Stop");
+            findViewById(R.id.pause).setEnabled(true);
             licz=true;
             GPS gps = GPS.getGPS();      //<-- tutaj przechowywana jest lista zawierajaca obiekty Point ktore przechowuja informacje o lokalizacji
                                         // z Location mozna duzo informacji wyciagnąc, np: getSpeed
@@ -167,6 +180,9 @@ public class CaloriesCounterActivity extends AppCompatActivity {
         }
         else {
             button.setText("Licz");
+            findViewById(R.id.pause).setEnabled(false);
+            ((Button)findViewById(R.id.pause)).setText("włącz");
+            pause=false;
             licz=false;
             //GPS.getGPS().cleanHistory();
         }

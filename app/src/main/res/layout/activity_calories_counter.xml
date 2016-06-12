@@ -8,9 +8,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Typ aktywności"
+        android:text="Aktywność"
         android:id="@+id/textView5"
         android:textSize="20dp"
+        android:width="200dp"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/textView14"
         android:layout_toStartOf="@+id/textView14" />
@@ -23,7 +24,7 @@
         android:textSize="20dp"
         android:layout_below="@+id/radioGroup2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp" />
+        android:layout_marginTop="60dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -149,4 +150,31 @@
         android:textSize="35sp"
         android:textStyle="normal"
         android:onClick="activityRecording"/>
+
+    <Button
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button"
+        android:text="włącz"
+        android:enabled="false"
+        android:width="150sp"
+        android:textSize="25sp"
+        android:id="@+id/pause"
+        android:layout_alignRight="@+id/textView10"
+        android:layout_alignEnd="@+id/textView10"
+        android:layout_marginTop="10dp"
+        android:onClick="activityPause" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="pauza: "
+        android:id="@+id/textView16"
+        android:textSize="35dp"
+        android:layout_below="@+id/button"
+
+        android:layout_toLeftOf="@+id/pause"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
 </RelativeLayout>

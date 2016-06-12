@@ -14,20 +14,16 @@ public class Point {
     private double latitude;
     private double altitude;
     private float speed;
-    Date date;
-    static private int nr=0;
+    private Date date;
+    private boolean logHistory;
 
-
-
-    public Point(Location loc) {
-        System.out.println("dodano punkt "+nr);
-        nr++;
+    public Point(Location loc, boolean log) {
         longitude = loc.getLongitude(); //długość
         latitude = loc.getLatitude();   //szerokość
         altitude = loc.getAltitude();   //wysokość
         this.date = new Date();
         speed = loc.getSpeed();
-
+        logHistory=log;
     }
 
     public double getLongitude() {
@@ -50,4 +46,7 @@ public class Point {
         return speed;
     }
 
+    public boolean isLogHistory() {
+        return logHistory;
+    }
 }
