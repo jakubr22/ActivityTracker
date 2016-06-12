@@ -33,10 +33,10 @@ public class CaloriesCounterActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
     }
 
-    int getTimeInterval(Point pStart, Point pNext){ //obliczanie roznicy czasu pomiedzy punktami pomiarowymi GPS
+    double getTimeInterval(Point pStart, Point pNext){ //obliczanie roznicy czasu pomiedzy punktami pomiarowymi GPS
         Date dateStart = pStart.getDate(), dateNext = pNext.getDate();
-        int timeInterval=(int)((dateNext.getTime() - dateStart.getTime())/1000); //roznica czasu wyrazona w sekundach
-
+        double timeInterval = dateNext.getTime() - dateStart.getTime();
+        timeInterval /= 1000;
         return timeInterval;
     }
 
@@ -61,7 +61,7 @@ public class CaloriesCounterActivity extends AppCompatActivity {
     }
 
 
-    double calculateSpeed(int distance, int timeInterval){ //obliczanie predkosci w km/h
+    double calculateSpeed(int distance, double timeInterval){ //obliczanie predkosci w km/h
         double speed = (double)(distance/timeInterval)*3.6;
         speed *= 100;
         speed = Math.round(speed);
