@@ -24,10 +24,12 @@ public class GPS extends Thread implements LocationListener {
     static private LinkedList<Point> history = new LinkedList<>();
     private List<IActivity> ActivityList;
     private boolean logHistory = false;
+    private History historyActivity;
 
     @SuppressWarnings("static-access")
     public GPS(LocationManager lm) {
         ActivityList = new LinkedList<>();
+        historyActivity = new History();
         cr = new Criteria();
         this.lm = lm;
         refresh();
@@ -138,5 +140,9 @@ public class GPS extends Thread implements LocationListener {
 
     public void setLogHistory(boolean logHistory) {
         this.logHistory = logHistory;
+    }
+
+    public History getHistoryActivity() {
+        return historyActivity;
     }
 }

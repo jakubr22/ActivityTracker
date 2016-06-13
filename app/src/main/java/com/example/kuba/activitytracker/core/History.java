@@ -9,9 +9,8 @@ import java.util.LinkedList;
 /**
  * przechowuje historie wszystkich activity
  * <p/>
- * TODO klikniecie stop powinno podawać trase.
- * sprawdzić czy zapisywanie działa,
- * dodać jakies activity do wyświetlania, mape mogę pozniej dorobic
+ * TODO sprawdzić czy zapisywanie działa,
+ * TODO dodać jakies activity do wyświetlania, mape mogę pozniej dorobic
  */
 public class History {
     private LinkedList<Log> history;

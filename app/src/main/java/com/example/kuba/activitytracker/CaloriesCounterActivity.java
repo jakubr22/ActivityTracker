@@ -159,6 +159,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
         } else {
             button.setText("Licz");
+            gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
             findViewById(R.id.pause).setEnabled(false);
             ((Button) findViewById(R.id.pause)).setText("włącz");
             data.setPause(false);
