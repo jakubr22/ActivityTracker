@@ -36,15 +36,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         if (weight != "") {
             data.setUserWeight(Double.parseDouble(weight));
         }
-        if (data.isPause())
-            ((Button) findViewById(R.id.pause)).setText("wyłącz");
-        else
-            ((Button) findViewById(R.id.pause)).setText("włącz");
-        if (data.isLicz()) {
-            ((Button) findViewById(R.id.button)).setText("Stop");
-            findViewById(R.id.pause).setEnabled(true);
-        } else
-            ((Button) findViewById(R.id.button)).setText("Licz");
+
 
         show();
     }
@@ -183,7 +175,6 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
     private void count(Point prev, Point next) {
         data.add(getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
                 calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
-                data.getCurrentSpeed(),
                 getDistanceBetweenPoints(prev, next),
                 getTimeInterval(prev, next));
     }

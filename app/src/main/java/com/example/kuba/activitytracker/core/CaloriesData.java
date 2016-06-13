@@ -32,7 +32,7 @@ public class CaloriesData {
         return instance;
     }
 
-    public void add(double calories, double currentSpeed, double sumSpeed, double sumDistance, double time) {
+    public void add(double calories, double currentSpeed, double sumDistance, double time) {
         this.calories+=calories;
         this.currentSpeed = currentSpeed;
         this.sumSpeed += this.currentSpeed;
