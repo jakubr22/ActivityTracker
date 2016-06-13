@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.kuba.activitytracker.core.CaloriesData;
 import com.example.kuba.activitytracker.core.GPS;
 import com.example.kuba.activitytracker.core.IActivity;
 import com.example.kuba.activitytracker.core.Point;
@@ -15,17 +16,10 @@ import com.example.kuba.activitytracker.core.Point;
 import java.util.Date;
 
 public class CaloriesCounterActivity extends AppCompatActivity implements IActivity {
-    double przebytyDystans = 0, predkoscAktualna, predkoscSrednia;
-    private int spaloneKalorie = 0, czasTrwaniaAktywnosci = 0;
-    private boolean licz = false, pause = false;
     private GPS gps;
-    private Point lastKnownPosition;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private double calories = 0, currentSpeed = 0, averageSpeed = 0, distance = 0,  sumDistance=0;
-    private long sumSpeed = 0;
-    private int time = 0;
-    private double userWeight = 0;
+    private CaloriesData data = CaloriesData.getInstance();
 
 
     @Override
@@ -36,7 +30,25 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         editor = sharedPreferences.edit();
         gps = GPS.getGPS();
         gps.addActivity(this);
+        String weight = sharedPreferences.getString("weight", "");
+
+
+        if (weight != "") {
+            data.setUserWeight(Double.parseDouble(weight));
+        }
+        if (data.isPause())
+            ((Button) findViewById(R.id.pause)).setText("wyłącz");
+        else
+            ((Button) findViewById(R.id.pause)).setText("włącz");
+        if (data.isLicz()) {
+            ((Button) findViewById(R.id.button)).setText("Stop");
+            findViewById(R.id.pause).setEnabled(true);
+        } else
+            ((Button) findViewById(R.id.button)).setText("Licz");
+
+        show();
     }
+
 
     double getTimeInterval(Point pStart, Point pNext) { //obliczanie roznicy czasu pomiedzy punktami pomiarowymi GPS
         Date dateStart = pStart.getDate(), dateNext = pNext.getDate();
@@ -120,36 +132,35 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
     public void activityPause(View view) {
         Button button = (Button) findViewById(R.id.pause);
-        if (pause) {
+        if (data.isPause()) {
             button.setText("włącz");
+            data.setLastKnownPosition(new Point(gps.getLoc(), true));
         } else {
             button.setText("wyłącz");
+            data.setLastKnownPosition(null);
         }
-        gps.setLogHistory(pause);
-        pause = !pause;
+        gps.setLogHistory(data.isPause());
+        data.setPause(!data.isPause());
     }
 
     public void activityRecording(View view) {
         Button button = (Button) findViewById(R.id.button);
-        if (licz == false) {
+        if (data.isLicz() == false) {
+            //gps.cleanHistory();
             button.setText("Stop");
             findViewById(R.id.pause).setEnabled(true);
-            licz = true;
-
-            String weight = sharedPreferences.getString("weight", "");
-
-            if (weight != "") {
-                userWeight = Double.parseDouble(weight);
-            }
+            data.setLicz(true);
 
 
-            Point prev = gps.getHistory().get(0);
-            for (Point i : gps.getHistory()) {
+            data.setLastKnownPosition(new Point(gps.getLoc(), true));
+
+            //Point prev = gps.getHistory().get(0);
+           /* for (Point i : gps.getHistory()) {
                 if (prev != i) {
                     count(prev, i);
                     lastKnownPosition = prev = i;
                 }
-            }
+            }*/
 
             show();
 
@@ -158,10 +169,10 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
             button.setText("Licz");
             findViewById(R.id.pause).setEnabled(false);
             ((Button) findViewById(R.id.pause)).setText("włącz");
-            pause = false;
-            licz = false;
-            calories =  currentSpeed =  averageSpeed = distance = sumDistance= sumSpeed=0;
-            //gps.cleanHistory();
+            data.setPause(false);
+            data.setLicz(false);
+            data.clearData();
+
         }
 
     }
@@ -170,34 +181,36 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
      * wykonuje obliczenia do potrzebne do oczacowania kalorii
      */
     private void count(Point prev, Point next) {
-        calories += getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * userWeight;
-        currentSpeed = calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next));
-        sumSpeed += currentSpeed;
-        sumDistance += getDistanceBetweenPoints(prev, next);
-        time += getTimeInterval(prev, next);
+        data.add(getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+                calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
+                data.getCurrentSpeed(),
+                getDistanceBetweenPoints(prev, next),
+                getTimeInterval(prev, next));
     }
 
     /**
      * pokazuje na ekranie wyniki
      */
     private void show() {
-        averageSpeed = sumSpeed / gps.getHistory().size();
-        distance = sumDistance / 1000;
+        data.setAverageSpeed(data.getSumSpeed() / data.getPoints());
+        data.setDistance(data.getSumDistance() / 1000);
 
         TextView kalorie = (TextView) findViewById(R.id.textView11);
-        kalorie.setText(String.format("%.0f", calories) + " kcal");
+        kalorie.setText(String.format("%.0f", data.getCalories()) + " kcal");
 
         TextView aktualnaPredkosc = (TextView) findViewById(R.id.textView12);
-        aktualnaPredkosc.setText(String.format("%.2f", currentSpeed) + " km/h");
+        aktualnaPredkosc.setText(String.format("%.2f", data.getCurrentSpeed()) + " km/h");
 
         TextView sredniaPredkosc = (TextView) findViewById(R.id.textView13);
-        sredniaPredkosc.setText(String.format("%.2f", averageSpeed) + " km/h");
+        if (Double.isNaN(data.getAverageSpeed()))
+            data.setAverageSpeed(0);
+        sredniaPredkosc.setText(String.format("%.2f", data.getAverageSpeed()) + " km/h");
 
         TextView przebytyDystans = (TextView) findViewById(R.id.textView14);
-        przebytyDystans.setText(String.format("%.1f", distance) + " km");
+        przebytyDystans.setText(String.format("%.1f", data.getDistance()) + " km");
 
         TextView czasTrwania = (TextView) findViewById(R.id.textView15);
-        String czas = secondsToTimeFormat(time);
+        String czas = secondsToTimeFormat((int) data.getTime());
         czasTrwania.setText(czas);
     }
 
@@ -250,17 +263,22 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
     @Override
     public void refresh() {
-        if (!licz) return;
-        Point curPos = new Point(gps.getLoc(), true);
+        if (!data.isLicz()) return;
+        if (data.getLastKnownPosition() != null) {
+            data.setPoints(data.getPoints() + 1);
+            Point curPos = new Point(gps.getLoc(), true);
 
-        count(lastKnownPosition, curPos);
-        show();
+            count(data.getLastKnownPosition(), curPos);
+            show();
 
-        lastKnownPosition = curPos;
+            data.setLastKnownPosition(curPos);
+        }
     }
 
     public void onStop() {
         super.onStop();
-        gps.delActivity(this);
+        //gps.delActivity(this);
     }
+
+
 }

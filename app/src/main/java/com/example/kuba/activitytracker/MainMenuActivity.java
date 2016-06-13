@@ -55,8 +55,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
        super.onResume();
         setName();
-
-        System.out.println("Czesc");
     }
 
 

@@ -27,14 +27,14 @@ public class GPS extends Thread implements LocationListener {
 
     @SuppressWarnings("static-access")
     public GPS(LocationManager lm) {
-
         ActivityList = new LinkedList<>();
         cr = new Criteria();
         this.lm = lm;
         refresh();
         try {
             lm.requestLocationUpdates(bestProvider, 1000, 2, this); // refresh co
-        } catch (SecurityException e) { }        // 1000ms i 2
+        } catch (SecurityException e) {
+        }        // 1000ms i 2
         // metry
         gps = this;
 
@@ -55,10 +55,11 @@ public class GPS extends Thread implements LocationListener {
             gps = new GPS();
         return gps;
     }
-    /*public void cleanHistory(){
+
+    public void cleanHistory() {
 
         history = new ArrayList<>();
-    }*/
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -81,7 +82,8 @@ public class GPS extends Thread implements LocationListener {
         return loc.getLatitude();
 
     }
-    public float getSpeed(){
+
+    public float getSpeed() {
         return loc.getSpeed();
     }
 
@@ -94,7 +96,7 @@ public class GPS extends Thread implements LocationListener {
         bestProvider = lm.getBestProvider(cr, true);
         if (bestProvider != null) {
             loc = lm.getLastKnownLocation(bestProvider);
-            history.add(new Point(loc,logHistory));
+            history.add(new Point(loc, logHistory));
         }
 
     }

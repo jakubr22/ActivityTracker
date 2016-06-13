@@ -28,7 +28,7 @@ def interpolateList(x0,y0,x1,y1):
     
 if __name__ == "__main__":
         SIMULATE=False;
-        step = 15;
+        step = 35;
         HOST = "localhost"
         PORT = "5554"
         password = "auth activity\r\n".encode('ascii')
@@ -44,17 +44,16 @@ if __name__ == "__main__":
 
         print("symulacja GPS")
         print("wpisano punkt startowy")
-        for i in range(len(trasax)-1):
-                points=interpolateListSTR(trasax[i],trasay[i],trasax[i+1],trasay[i+1])
-                for j in range(len(points)):
-                        if SIMULATE:
-                                print(("geo fix "+points[j][0]+" "+points[j][1]+"\r\n"))
-                        else:
-                                tn.write(("geo fix "+points[j][0]+" "+points[j][1]+"\r\n").encode('ascii'))
-                        time.sleep(step/5)
-                print("wpisano punkt "+str(i+1))
-                
-
-
+        while True:
+            for i in range(len(trasax)-1):
+                    points=interpolateListSTR(trasax[i],trasay[i],trasax[i+1],trasay[i+1])
+                    for j in range(len(points)):
+                            if SIMULATE:
+                                    print(("geo fix "+points[j][0]+" "+points[j][1]+"\r\n"))
+                            else:
+                                    tn.write(("geo fix "+points[j][0]+" "+points[j][1]+"\r\n").encode('ascii'))
+                            time.sleep(step/5)
+                    print("wpisano punkt "+str(i+1))
+    
 
         input("Press any key to continue...")
