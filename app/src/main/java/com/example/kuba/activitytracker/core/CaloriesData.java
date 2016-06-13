@@ -34,8 +34,8 @@ public class CaloriesData {
 
     public void add(double calories, double currentSpeed, double sumSpeed, double sumDistance, double time) {
         this.calories+=calories;
-        this.currentSpeed+=currentSpeed;
-        this.sumSpeed+=sumSpeed;
+        this.currentSpeed = currentSpeed;
+        this.sumSpeed += this.currentSpeed;
         this.sumDistance+=sumDistance;
         this.time+=time;
 
