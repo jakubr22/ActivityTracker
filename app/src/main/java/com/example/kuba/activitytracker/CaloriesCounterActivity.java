@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import com.example.kuba.activitytracker.core.Point;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -70,6 +68,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         } else {
             buttonLicz.setText("Start");
             //gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
+            gps.getHistoryActivity().add(data);
             findViewById(R.id.pause).setEnabled(false);
             ((Button)findViewById(R.id.pause)).setText("Pauza");
             data.setPause(false);

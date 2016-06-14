@@ -13,10 +13,14 @@ import java.util.LinkedList;
  * TODO dodać jakies activity do wyświetlania, mape mogę pozniej dorobic
  */
 public class History {
-    private LinkedList<Log> history;
+    private LinkedList<Log> history = new LinkedList<>();
 
     public void add(Log log) {
         history.add(log);
+    }
+
+    public void add(CaloriesData data) {
+        history.add(new Log(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime()));
     }
 
     public void add(double calories, double averageSpeed, double distance, double time) {
