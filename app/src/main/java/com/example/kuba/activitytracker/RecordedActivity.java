@@ -20,7 +20,7 @@ public class RecordedActivity extends AppCompatActivity {
         message = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).getAktynowść();
         bieganie.setText(message);
 
-        /*TextView data = (TextView)findViewById(R.id.textView24);
+        TextView data = (TextView) findViewById(R.id.textView24);
         message = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).toString();
 
         TextView czasTrwania = (TextView)findViewById(R.id.textView25);
@@ -30,17 +30,17 @@ public class RecordedActivity extends AppCompatActivity {
 
         TextView kalorie = (TextView)findViewById(R.id.textView26);
         pom = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).getCalories();
-        kalorie.setText(String.format("%.0f", pom + " kcal"));
+        kalorie.setText(String.format("%.0f", pom) + " kcal");
 
 
         TextView dystans = (TextView)findViewById(R.id.textView27);
         pom = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).getDistance();
-        dystans.setText(String.format("%.2f", pom + " km"));
+        dystans.setText(String.format("%.2f", pom) + " km");
 
 
         TextView sredniaPredkosc = (TextView)findViewById(R.id.textView28);
         pom = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).getAverageSpeed();
-        sredniaPredkosc.setText(String.format("%.2f", pom + " km/h"));*/
+        sredniaPredkosc.setText(String.format("%.2f", pom) + " km/h");
     }
 
     String secondsToTimeFormat(double timeInterval) { //Funkcja zmieniajaca interwal czasowy wyrazony w sekundach
