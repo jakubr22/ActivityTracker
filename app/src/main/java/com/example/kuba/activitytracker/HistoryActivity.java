@@ -51,8 +51,21 @@ public class HistoryActivity extends AppCompatActivity {
         }
         else{
             for (Log i : GPS.getGPS().getHistoryActivity().getHistory()) {
+                System.out.println("wchodze do elsa");
+                final int index = i.getNr();
                 Button button = new Button(this);
                 button.setText(i.toString());
+
+                System.out.println("dodaje listenera");
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        GPS.getGPS().getHistoryActivity().setChoosed(index);
+                        Intent intent = new Intent(getApplicationContext(),RecordedActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
                 layout.addView(button);
             }
 

@@ -178,6 +178,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
             data.setLastKnownPosition(curPos);
         }
+
     }
 
     public void onStop() {
