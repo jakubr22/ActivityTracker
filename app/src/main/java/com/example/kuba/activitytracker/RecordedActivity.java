@@ -20,7 +20,7 @@ public class RecordedActivity extends AppCompatActivity {
         message = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).getAktynowść();
         bieganie.setText(message);
 
-        TextView data = (TextView) findViewById(R.id.textView24);
+        TextView data = (TextView)findViewById(R.id.textView24);
         message = GPS.getGPS().getHistoryActivity().getHistory().get(choosed).toString();
 
         TextView czasTrwania = (TextView)findViewById(R.id.textView25);
@@ -51,9 +51,9 @@ public class RecordedActivity extends AppCompatActivity {
                 pomTimeInterval -= (timeInterval % 3600);
                 hours = pomTimeInterval / 3600;
                 if (hours < 10) {
-                    time = "0" + hours + "h";
+                    time = "0" + String.format("%.0f",hours) + "h";
                 } else {
-                    time = hours + "h";
+                    time = String.format("%.0f",hours) + "h";
                 }
                 timeInterval = timeInterval % 3600; //pozostale minuty + sekundy
 
@@ -62,16 +62,16 @@ public class RecordedActivity extends AppCompatActivity {
                     pomTimeInterval -= (timeInterval % 60);
                     minutes = pomTimeInterval / 60;
                     if (minutes < 10) {
-                        time = time + "0" + minutes + "m";
+                        time = time + "0" + String.format("%.0f",hours) + "m";
                     } else {
-                        time = time + minutes + "m";
+                        time = time + String.format("%.0f",hours) + "m";
                     }
                     timeInterval = timeInterval % 60; //pozostale sekundy
 
                     if (timeInterval < 10) {
-                        time = time + "0" + timeInterval + "s";
+                        time = time + "0" + String.format("%.0f",hours) + "s";
                     } else {
-                        time = time + timeInterval + "s";
+                        time = time + String.format("%.0f",hours) + "s";
                     }
                     return time;
                 } else {

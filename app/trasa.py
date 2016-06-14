@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
         print("symulacja GPS")
         print("wpisano punkt startowy")
-        while True:
-            for i in range(len(trasax)-1):
+        
+        for i in range(len(trasax)-1):
                     points=interpolateListSTR(trasax[i],trasay[i],trasax[i+1],trasay[i+1])
                     for j in range(len(points)):
                             if SIMULATE:
