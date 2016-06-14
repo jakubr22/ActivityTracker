@@ -15,7 +15,6 @@ import com.example.kuba.activitytracker.core.GPS;
 import com.example.kuba.activitytracker.core.IActivity;
 import com.example.kuba.activitytracker.core.Point;
 
-import java.sql.SQLOutput;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,11 +39,20 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         //data.clearData();
         String weight = sharedPreferences.getString("weight", "");
 
-
-
         if (weight != "") {
             data.setUserWeight(Double.parseDouble(weight));
         }
+        if (data.isPause())
+            ((Button) findViewById(R.id.pause)).setText("kontynuuj");
+        else
+            ((Button) findViewById(R.id.pause)).setText("pauza");
+        if (data.isLicz()) {
+            ((Button) findViewById(R.id.button)).setText("Stop");
+            findViewById(R.id.pause).setEnabled(true);
+        } else
+            ((Button) findViewById(R.id.button)).setText("Licz");
+
+
         show();
     }
 
@@ -71,19 +79,17 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
             //gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
             gps.getHistoryActivity().add(data);
             findViewById(R.id.pause).setEnabled(false);
-            ((Button)findViewById(R.id.pause)).setText("Pauza");
+            ((Button) findViewById(R.id.pause)).setText("Pauza");
             data.setPause(false);
             data.setLicz(false);
             String rodzajAktywnosci;
-            if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
+            if (((RadioButton) findViewById(R.id.radioButton3)).isChecked()) {
                 rodzajAktywnosci = "Bieganie";
-            }
-            else if (((RadioButton)findViewById(R.id.radioButton4)).isChecked()){
+            } else if (((RadioButton) findViewById(R.id.radioButton4)).isChecked()) {
                 rodzajAktywnosci = "Rower";
-            }
-            else rodzajAktywnosci = "Rolki";
+            } else rodzajAktywnosci = "Rolki";
             System.out.println("zapisuje");
-            activitySaving(data,rodzajAktywnosci);
+            activitySaving(data, rodzajAktywnosci);
             data.clearData();
         }
     }
@@ -105,23 +111,22 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
      * wykonuje obliczenia do potrzebne do oczacowania kalorii
      */
     private void count(Point prev, Point next) {
-        if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
-            System.out.println(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next),getTimeInterval(prev, next))));
+        if (((RadioButton) findViewById(R.id.radioButton3)).isChecked()) {
+            System.out.println(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next))));
             System.out.println(getTimeInterval(prev, next));
             System.out.println(data.getUserWeight());
-            data.add(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next),getTimeInterval(prev, next)))
-                    * getTimeInterval(prev, next) * data.getUserWeight(),
+            data.add(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)))
+                            * getTimeInterval(prev, next) * data.getUserWeight(),
                     calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
                     getDistanceBetweenPoints(prev, next),
                     getTimeInterval(prev, next));
-        }
-        else if (((RadioButton)findViewById(R.id.radioButton4)).isChecked()){
+        } else if (((RadioButton) findViewById(R.id.radioButton4)).isChecked()) {
             data.add(getKcalNaKgNaSecJazdyRowerem(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
                     calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
                     getDistanceBetweenPoints(prev, next),
                     getTimeInterval(prev, next));
-        }
-        else data.add(getKcalNaKgNaSecJazdyNaRolkach(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+        } else
+            data.add(getKcalNaKgNaSecJazdyNaRolkach(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
                     calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
                     getDistanceBetweenPoints(prev, next),
                     getTimeInterval(prev, next));
@@ -154,6 +159,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         String czas = secondsToTimeFormat((int) data.getTime());
         czasTrwania.setText(czas);
     }
+
     @Override
     public void refresh() {
         if (!data.isLicz()) return;
@@ -178,7 +184,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         startActivity(intent);
     }
 
-    public void activitySaving (CaloriesData data, String rodzajAktywnosci){
+    public void activitySaving(CaloriesData data, String rodzajAktywnosci) {
         //Rodzaj,Data,czas trwania,Kalorie,dystans,srednia predkosc
         Set<String> activity = new LinkedHashSet<String>();
         activity.add(rodzajAktywnosci);
@@ -191,7 +197,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         activity.add(String.valueOf(data.getAverageSpeed()));
         editor.putInt("activityNumber", activityNumber);
         editor.commit();
-        editor.putStringSet("activity" + activityNumber,activity);
+        editor.putStringSet("activity" + activityNumber, activity);
         editor.commit();
     }
 
@@ -281,45 +287,45 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
     double getKcalNaKgNaSecBiegu(double speed) { //predkosc w km/h; zwraca nam wartosc spalanych kalorii na kg masy ciala przy podanej predkosci
         double mTKm = 1.609;
-        if (speed < 2 * mTKm) return 2.0/3600;
-        else if (speed < 2.5 * mTKm) return 3.0/3600;
-        else if (speed < 3 * mTKm) return 3.5/3600;
-        else if (speed < 3.5 * mTKm) return 4.3/3600;
-        else if (speed < 4 * mTKm) return 5.0/3600;
-        else if (speed < 4.5 * mTKm) return 7.0/3600;
-        else if (speed < 5 * mTKm) return 8.3/3600;
-        else if (speed < 6 * mTKm) return 9.8/3600;
-        else if (speed < 7 * mTKm) return 11.0/3600;
-        else if (speed < 8 * mTKm) return 11.8/3600;
-        else if (speed < 9 * mTKm) return 12.8/3600;
-        else if (speed < 10 * mTKm) return 14.5/3600;
-        else if (speed < 11 * mTKm) return 16.0/3600;
-        else if (speed < 12 * mTKm) return 19.0/3600;
-        else if (speed < 13 * mTKm) return 20.8/3600;
-        else if (speed < 14 * mTKm) return 23.0/3600;
-        else return 24.5/3600;
+        if (speed < 2 * mTKm) return 2.0 / 3600;
+        else if (speed < 2.5 * mTKm) return 3.0 / 3600;
+        else if (speed < 3 * mTKm) return 3.5 / 3600;
+        else if (speed < 3.5 * mTKm) return 4.3 / 3600;
+        else if (speed < 4 * mTKm) return 5.0 / 3600;
+        else if (speed < 4.5 * mTKm) return 7.0 / 3600;
+        else if (speed < 5 * mTKm) return 8.3 / 3600;
+        else if (speed < 6 * mTKm) return 9.8 / 3600;
+        else if (speed < 7 * mTKm) return 11.0 / 3600;
+        else if (speed < 8 * mTKm) return 11.8 / 3600;
+        else if (speed < 9 * mTKm) return 12.8 / 3600;
+        else if (speed < 10 * mTKm) return 14.5 / 3600;
+        else if (speed < 11 * mTKm) return 16.0 / 3600;
+        else if (speed < 12 * mTKm) return 19.0 / 3600;
+        else if (speed < 13 * mTKm) return 20.8 / 3600;
+        else if (speed < 14 * mTKm) return 23.0 / 3600;
+        else return 24.5 / 3600;
     }
 
     double getKcalNaKgNaSecJazdyRowerem(double speed) {//predkosc w km/h
         double mTKm = 1.609;
 
-        if (speed < 5.5 * mTKm) return 3.5/3600;
-        else if (speed < 9.4 * mTKm) return 5.8/3600;
-        else if (speed < 12 * mTKm) return 6.8/3600;
-        else if (speed < 14 * mTKm) return 8.0/3600;
-        else if (speed < 16 * mTKm) return 10.0/3600;
-        else if (speed < 19.5 * mTKm) return 12.0/3600;
-        else return 15.8/3600;
+        if (speed < 5.5 * mTKm) return 3.5 / 3600;
+        else if (speed < 9.4 * mTKm) return 5.8 / 3600;
+        else if (speed < 12 * mTKm) return 6.8 / 3600;
+        else if (speed < 14 * mTKm) return 8.0 / 3600;
+        else if (speed < 16 * mTKm) return 10.0 / 3600;
+        else if (speed < 19.5 * mTKm) return 12.0 / 3600;
+        else return 15.8 / 3600;
     }
 
     double getKcalNaKgNaSecJazdyNaRolkach(double speed) {//predkosc w km/h
         double mTKm = 1.609;
 
-        if (speed < 7 * mTKm) return 5.0/3600;
-        else if (speed < 9 * mTKm) return 7.5/3600;
-        else if (speed < 11 * mTKm) return 9.8/3600;
-        else if (speed < 13 * mTKm) return 12.3/3600;
-        else if (speed < 15 * mTKm) return 14.0/3600;
-        else return 15.0/3600;
+        if (speed < 7 * mTKm) return 5.0 / 3600;
+        else if (speed < 9 * mTKm) return 7.5 / 3600;
+        else if (speed < 11 * mTKm) return 9.8 / 3600;
+        else if (speed < 13 * mTKm) return 12.3 / 3600;
+        else if (speed < 15 * mTKm) return 14.0 / 3600;
+        else return 15.0 / 3600;
     }
 }

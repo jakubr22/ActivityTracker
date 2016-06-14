@@ -20,6 +20,12 @@ public class Log {
         this.time = time;
     }
 
+    public String toString() {
+
+        return log.getFirst().getDate().toString();
+
+    }
+
 
     public LinkedList<Point> getLog() {
         return log;

@@ -7,7 +7,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kuba.activitytracker.core.GPS;
@@ -33,16 +32,13 @@ public class MainMenuActivity extends AppCompatActivity {
         setName();
 
 
-
-        boolean con=true;
-        while(con)
             try {    // w przypadku braku fixa wyjatek jest łapany
-                con=false;
+
                 gps = new GPS((LocationManager) getSystemService(LOCATION_SERVICE));
                 gps.getLongitude();
             } catch (Exception e) {
                 //((Button) findViewById(R.id.button1)).setEnabled(false);
-                ((Button) findViewById(R.id.button2)).setEnabled(false);
+                //((Button) findViewById(R.id.button2)).setEnabled(false);
                 //((Button) findViewById(R.id.button3)).setEnabled(false);
                 //con=true;
                    // Thread.sleep(1000);

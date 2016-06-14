@@ -2,15 +2,14 @@ package com.example.kuba.activitytracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.example.kuba.activitytracker.core.GPS;
+import com.example.kuba.activitytracker.core.Log;
 
 public class HistoryActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
@@ -36,27 +35,18 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     public void activityLoading(LinearLayout layout){
-        int activityNumber = sharedPreferences.getInt("activityNumber", 0);
-        Set parametry;
-        String[] parametryArray;
-        System.out.println("rozpoczynam ladowanie");
-        if(activityNumber == 0){
+
+        if (GPS.getGPS().getHistoryActivity().getHistory().size() == 0) {
             Toast toast = Toast.makeText(this,"Nie zarejestrowano jeszcze żadnej aktywności", Toast.LENGTH_LONG);
             toast.show();
         }
         else{
-            for(int i=0; i<activityNumber; i++){
-                parametry = sharedPreferences.getStringSet("activity"+(i+1),null);
-                if(parametry != null){
-                    System.out.println("not a null");
-                    parametryArray = new String[parametry.size()];
-                    parametry.toArray(parametryArray);
-                    String message = parametryArray[0];
-                    Button button = new Button(this);
-                    button.setText(message);
-                    layout.addView(button);
-                }
+            for (Log i : GPS.getGPS().getHistoryActivity().getHistory()) {
+                Button button = new Button(this);
+                button.setText(i.toString());
+                layout.addView(button);
             }
+
         }
     }
 }

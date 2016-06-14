@@ -16,22 +16,22 @@ public class History {
     private LinkedList<Log> history = new LinkedList<>();
 
     public void add(Log log) {
-        history.add(log);
+        getHistory().add(log);
     }
 
     public void add(CaloriesData data) {
-        history.add(new Log(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime()));
+        getHistory().add(new Log(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime()));
     }
 
     public void add(double calories, double averageSpeed, double distance, double time) {
-        history.add(new Log(calories, averageSpeed, distance, time));
+        getHistory().add(new Log(calories, averageSpeed, distance, time));
     }
 
     public void save() {
-        if (!history.isEmpty()) {
+        if (!getHistory().isEmpty()) {
             FileOutputStream fos = null;
             ObjectOutputStream out = null;
-            for (Log i : history) {
+            for (Log i : getHistory()) {
                 try {
                     fos = new FileOutputStream("history");
                     out = new ObjectOutputStream(fos);
@@ -59,5 +59,9 @@ public class History {
                 return;
             }
 
+    }
+
+    public LinkedList<Log> getHistory() {
+        return history;
     }
 }
