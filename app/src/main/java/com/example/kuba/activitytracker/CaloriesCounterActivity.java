@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -27,6 +29,8 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
     private SharedPreferences.Editor editor;
     private CaloriesData data = CaloriesData.getInstance();
     private int activityNumber = 0;
+    private Chronometer chronometer;
+    long timeWhenStopped =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         gps = GPS.getGPS();
         gps.addActivity(this);
         //data.clearData();
+        chronometer = (Chronometer)findViewById(R.id.chronometer);
         String weight = sharedPreferences.getString("weight", "");
 
         if (weight != "") {
@@ -73,9 +78,12 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
                     lastKnownPosition = prev = i;
                 }
             }*/
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
             show();
         } else {
             buttonLicz.setText("Start");
+            chronometer.stop();
             //gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
 
             if (((RadioButton) findViewById(R.id.radioButton3)).isChecked())
@@ -102,11 +110,16 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
     public void activityPause(View view) {
         Button button = (Button) findViewById(R.id.pause);
+
         if (data.isPause()) {
             button.setText("Pauza");
+            chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+            chronometer.start();
             data.setLastKnownPosition(new Point(gps.getLoc(), true));
         } else {
             button.setText("Kontynuuj");
+            timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
+            chronometer.stop();
             data.setLastKnownPosition(null);
         }
         gps.setLogHistory(data.isPause());
@@ -161,9 +174,9 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         TextView przebytyDystans = (TextView) findViewById(R.id.textView14);
         przebytyDystans.setText(String.format("%.1f", data.getDistance()) + " km");
 
-        TextView czasTrwania = (TextView) findViewById(R.id.textView15);
+        /*TextView czasTrwania = (TextView) findViewById(R.id.textView15);
         String czas = secondsToTimeFormat((int) data.getTime());
-        czasTrwania.setText(czas);
+        czasTrwania.setText(czas);*/
     }
 
     @Override

@@ -64,16 +64,16 @@ public class RecordedActivity extends AppCompatActivity {
                     pomTimeInterval -= (timeInterval % 60);
                     minutes = pomTimeInterval / 60;
                     if (minutes < 10) {
-                        time = time + "0" + String.format("%.0f",hours) + "m";
+                        time = time + "0" + String.format("%.0f",minutes) + "m";
                     } else {
-                        time = time + String.format("%.0f",hours) + "m";
+                        time = time + String.format("%.0f",minutes) + "m";
                     }
                     timeInterval = timeInterval % 60; //pozostale sekundy
 
                     if (timeInterval < 10) {
-                        time = time + "0" + String.format("%.0f",hours) + "s";
+                        time = time + "0" + String.format("%.0f",timeInterval) + "s";
                     } else {
-                        time = time + String.format("%.0f",hours) + "s";
+                        time = time + String.format("%.0f",timeInterval) + "s";
                     }
                     return time;
                 } else {
