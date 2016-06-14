@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -81,6 +82,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
                 rodzajAktywnosci = "Rower";
             }
             else rodzajAktywnosci = "Rolki";
+            System.out.println("zapisuje");
             activitySaving(data,rodzajAktywnosci);
             data.clearData();
         }
@@ -104,7 +106,8 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
      */
     private void count(Point prev, Point next) {
         if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
-            data.add(getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+            data.add(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next),getTimeInterval(prev, next)))
+                    * getTimeInterval(prev, next) * data.getUserWeight(),
                     calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
                     getDistanceBetweenPoints(prev, next),
                     getTimeInterval(prev, next));
@@ -184,7 +187,9 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         activity.add(String.valueOf(data.getDistance()));
         activity.add(String.valueOf(data.getAverageSpeed()));
         editor.putInt("activityNumber", activityNumber);
+        editor.commit();
         editor.putStringSet("activity" + activityNumber,activity);
+        editor.commit();
     }
 
     //FUNKCJE LICZĄCE
@@ -243,7 +248,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         return timeInterval;
     }
 
-    int getDistanceBetweenPoints(Point pStart, Point pStop) {/** Calculates the distance in m between two lat/long points* using the haversine formula
+    double getDistanceBetweenPoints(Point pStart, Point pStop) {/** Calculates the distance in m between two lat/long points* using the haversine formula
      z uwzglednieniem roznic wysokosci*/
         double longtitudeStart = pStart.getLongitude(), longtitudeStop = pStop.getLongitude(), latitudeStart = pStart.getLatitude(), latitudeStop = pStop.getLatitude();
         double altitudeStar = pStart.getAltitude(), altitudeStop = pStop.getAltitude();
@@ -260,10 +265,10 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         distance = Math.pow(distance, 2) + Math.pow(height, 2);
         distance = Math.sqrt(distance);
 
-        return (int) distance;
+        return distance;
     }
 
-    double calculateSpeed(int distance, double timeInterval) { //obliczanie predkosci w km/h
+    double calculateSpeed(double distance, double timeInterval) { //obliczanie predkosci w km/h
         double speed = (double) (distance / timeInterval) * 3.6;
         speed *= 100;
         speed = Math.round(speed);
