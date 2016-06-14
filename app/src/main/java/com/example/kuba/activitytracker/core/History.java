@@ -14,17 +14,18 @@ import java.util.LinkedList;
  */
 public class History {
     private LinkedList<Log> history = new LinkedList<>();
+    private int choosed;
 
     public void add(Log log) {
         getHistory().add(log);
     }
 
-    public void add(CaloriesData data) {
-        getHistory().add(new Log(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime()));
+    public void add(CaloriesData data, String aktywność) {
+        getHistory().add(new Log(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime(), aktywność));
     }
 
-    public void add(double calories, double averageSpeed, double distance, double time) {
-        getHistory().add(new Log(calories, averageSpeed, distance, time));
+    public void add(double calories, double averageSpeed, double distance, double time, String aktywność) {
+        getHistory().add(new Log(calories, averageSpeed, distance, time, aktywność));
     }
 
     public void save() {
@@ -63,5 +64,13 @@ public class History {
 
     public LinkedList<Log> getHistory() {
         return history;
+    }
+
+    public int getChoosed() {
+        return choosed;
+    }
+
+    public void setChoosed(int choosed) {
+        this.choosed = choosed;
     }
 }

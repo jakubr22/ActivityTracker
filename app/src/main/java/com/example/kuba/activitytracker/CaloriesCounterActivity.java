@@ -59,7 +59,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
     public void activityRecording(View view) {
         Button buttonLicz = (Button) findViewById(R.id.button);
         if (data.isLicz() == false) {
-            //gps.cleanHistory();
+            gps.cleanHistory();
             buttonLicz.setText("Stop");
             findViewById(R.id.pause).setEnabled(true);
             data.setLicz(true);
@@ -77,7 +77,13 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         } else {
             buttonLicz.setText("Start");
             //gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
-            gps.getHistoryActivity().add(data);
+
+            if (((RadioButton) findViewById(R.id.radioButton3)).isChecked())
+                gps.getHistoryActivity().add(data, "Bieganie");
+            else if (((RadioButton) findViewById(R.id.radioButton4)).isChecked())
+                gps.getHistoryActivity().add(data, "Rower");
+            else
+                gps.getHistoryActivity().add(data, "Rolki");
             findViewById(R.id.pause).setEnabled(false);
             ((Button) findViewById(R.id.pause)).setText("Pauza");
             data.setPause(false);
@@ -180,6 +186,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
     }
 
     public void openMapActivity(View view) {
+        if (gps.getHistory().size() == 0) return;
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }

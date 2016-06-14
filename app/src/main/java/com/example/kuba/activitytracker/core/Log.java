@@ -1,5 +1,7 @@
 package com.example.kuba.activitytracker.core;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 /**
@@ -11,9 +13,12 @@ public class Log {
     private double averageSpeed = 0;
     private double distance = 0;
     private double time = 0;
+    private String aktynowść;
+    private int nr;
 
-    public Log(double calories, double averageSpeed, double distance, double time) {
+    public Log(double calories, double averageSpeed, double distance, double time, String aktynowść) {
         log = GPS.getGPS().getHistory();
+        this.aktynowść = aktynowść;
         this.calories = calories;
         this.averageSpeed = averageSpeed;
         this.distance = distance;
@@ -22,7 +27,10 @@ public class Log {
 
     public String toString() {
 
-        return log.getFirst().getDate().toString();
+
+        Format formatter = new SimpleDateFormat("dd.MM.yy");
+        return formatter.format(log.getFirst().getDate());
+
 
     }
 
@@ -45,5 +53,13 @@ public class Log {
 
     public double getTime() {
         return time;
+    }
+
+    public int getNr() {
+        return nr;
+    }
+
+    public void setNr(int nr) {
+        this.nr = nr;
     }
 }
