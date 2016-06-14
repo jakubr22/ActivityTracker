@@ -1,11 +1,13 @@
 package com.example.kuba.activitytracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.kuba.activitytracker.core.CaloriesData;
@@ -13,14 +15,19 @@ import com.example.kuba.activitytracker.core.GPS;
 import com.example.kuba.activitytracker.core.IActivity;
 import com.example.kuba.activitytracker.core.Point;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class CaloriesCounterActivity extends AppCompatActivity implements IActivity {
     private GPS gps;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private CaloriesData data = CaloriesData.getInstance();
-
+    private int activityNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +37,204 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         editor = sharedPreferences.edit();
         gps = GPS.getGPS();
         gps.addActivity(this);
+        //data.clearData();
         String weight = sharedPreferences.getString("weight", "");
+
 
 
         if (weight != "") {
             data.setUserWeight(Double.parseDouble(weight));
         }
-
-
         show();
     }
 
+    public void activityRecording(View view) {
+        Button buttonLicz = (Button) findViewById(R.id.button);
+        if (data.isLicz() == false) {
+            //gps.cleanHistory();
+            buttonLicz.setText("Stop");
+            findViewById(R.id.pause).setEnabled(true);
+            data.setLicz(true);
+            data.setLastKnownPosition(new Point(gps.getLoc(), true));
+            activityNumber = sharedPreferences.getInt("activityNumber", 0);
+            activityNumber++;
+            //Point prev = gps.getHistory().get(0);
+           /* for (Point i : gps.getHistory()) {
+                if (prev != i) {
+                    count(prev, i);
+                    lastKnownPosition = prev = i;
+                }
+            }*/
+            show();
+        } else {
+            buttonLicz.setText("Start");
+            //gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
+            findViewById(R.id.pause).setEnabled(false);
+            ((Button)findViewById(R.id.pause)).setText("Pauza");
+            data.setPause(false);
+            data.setLicz(false);
+            String rodzajAktywnosci;
+            if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
+                rodzajAktywnosci = "Bieganie";
+            }
+            else if (((RadioButton)findViewById(R.id.radioButton4)).isChecked()){
+                rodzajAktywnosci = "Rower";
+            }
+            else rodzajAktywnosci = "Rolki";
+            activitySaving(data,rodzajAktywnosci);
+            data.clearData();
+        }
+    }
+
+    public void activityPause(View view) {
+        Button button = (Button) findViewById(R.id.pause);
+        if (data.isPause()) {
+            button.setText("Pauza");
+            data.setLastKnownPosition(new Point(gps.getLoc(), true));
+        } else {
+            button.setText("Kontynuuj");
+            data.setLastKnownPosition(null);
+        }
+        gps.setLogHistory(data.isPause());
+        data.setPause(!data.isPause());
+    }
+
+    /**
+     * wykonuje obliczenia do potrzebne do oczacowania kalorii
+     */
+    private void count(Point prev, Point next) {
+        if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
+            data.add(getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+                    calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
+                    getDistanceBetweenPoints(prev, next),
+                    getTimeInterval(prev, next));
+        }
+        else if (((RadioButton)findViewById(R.id.radioButton4)).isChecked()){
+            data.add(getKcalNaKgNaSecJazdyRowerem(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+                    calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
+                    getDistanceBetweenPoints(prev, next),
+                    getTimeInterval(prev, next));
+        }
+        else data.add(getKcalNaKgNaSecJazdyNaRolkach(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
+                    calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
+                    getDistanceBetweenPoints(prev, next),
+                    getTimeInterval(prev, next));
+
+
+    }
+
+    /**
+     * pokazuje na ekranie wyniki
+     */
+    private void show() {
+        data.setAverageSpeed(data.getSumSpeed() / data.getPoints());
+        data.setDistance(data.getSumDistance() / 1000);
+
+        TextView kalorie = (TextView) findViewById(R.id.textView11);
+        kalorie.setText(String.format("%.0f", data.getCalories()) + " kcal");
+
+        TextView aktualnaPredkosc = (TextView) findViewById(R.id.textView12);
+        aktualnaPredkosc.setText(String.format("%.2f", data.getCurrentSpeed()) + " km/h");
+
+        TextView sredniaPredkosc = (TextView) findViewById(R.id.textView13);
+        if (Double.isNaN(data.getAverageSpeed()))
+            data.setAverageSpeed(0);
+        sredniaPredkosc.setText(String.format("%.2f", data.getAverageSpeed()) + " km/h");
+
+        TextView przebytyDystans = (TextView) findViewById(R.id.textView14);
+        przebytyDystans.setText(String.format("%.1f", data.getDistance()) + " km");
+
+        TextView czasTrwania = (TextView) findViewById(R.id.textView15);
+        String czas = secondsToTimeFormat((int) data.getTime());
+        czasTrwania.setText(czas);
+    }
+    @Override
+    public void refresh() {
+        if (!data.isLicz()) return;
+        if (data.getLastKnownPosition() != null) {
+            data.setPoints(data.getPoints() + 1);
+            Point curPos = new Point(gps.getLoc(), true);
+
+            count(data.getLastKnownPosition(), curPos);
+            show();
+
+            data.setLastKnownPosition(curPos);
+        }
+    }
+
+    public void onStop() {
+        super.onStop();
+        //gps.delActivity(this);
+    }
+
+    public void openMapActivity(View view) {
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
+    }
+
+    public void activitySaving (CaloriesData data, String rodzajAktywnosci){
+        //Rodzaj,Data,czas trwania,Kalorie,dystans,srednia predkosc
+        Set<String> activity = new LinkedHashSet<String>();
+        activity.add(rodzajAktywnosci);
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+        Date date = new Date();
+        activity.add(dateFormat.format(date));
+        activity.add(String.valueOf(data.getTime()));
+        activity.add(String.valueOf(data.getCalories()));
+        activity.add(String.valueOf(data.getDistance()));
+        activity.add(String.valueOf(data.getAverageSpeed()));
+        editor.putInt("activityNumber", activityNumber);
+        editor.putStringSet("activity" + activityNumber,activity);
+    }
+
+    //FUNKCJE LICZĄCE
+
+    String secondsToTimeFormat(int timeInterval) { //Funkcja zmieniajaca interwal czasowy wyrazony w sekundach
+        String time = "";                   //na format hh:mm:ss aktywnosci
+        int hours, minutes, seconds, pomTimeInterval = timeInterval;
+        if (timeInterval > 0) {
+            if (timeInterval % 3600 != 0) {
+                pomTimeInterval -= (timeInterval % 3600);
+                hours = pomTimeInterval / 3600;
+                if (hours < 10) {
+                    time = "0" + hours + "h";
+                } else {
+                    time = hours + "h";
+                }
+                timeInterval = timeInterval % 3600; //pozostale minuty + sekundy
+
+                if (timeInterval % 60 != 0) {
+                    pomTimeInterval = timeInterval;
+                    pomTimeInterval -= (timeInterval % 60);
+                    minutes = pomTimeInterval / 60;
+                    if (minutes < 10) {
+                        time = time + "0" + minutes + "m";
+                    } else {
+                        time = time + minutes + "m";
+                    }
+                    timeInterval = timeInterval % 60; //pozostale sekundy
+
+                    if (timeInterval < 10) {
+                        time = time + "0" + timeInterval + "s";
+                    } else {
+                        time = time + timeInterval + "s";
+                    }
+                    return time;
+                } else {
+                    minutes = timeInterval / 60;
+                    time = time + minutes + "m00s";
+                    return time;
+                }
+            } else {
+                hours = timeInterval / 3600;
+                time = hours + "hh00m00s";
+                return time;
+            }
+        } else {
+            time = "00h00m00s";
+            return time;
+        }
+    }
 
     double getTimeInterval(Point pStart, Point pNext) { //obliczanie roznicy czasu pomiedzy punktami pomiarowymi GPS
         Date dateStart = pStart.getDate(), dateNext = pNext.getDate();
@@ -68,7 +262,6 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
         return (int) distance;
     }
-
 
     double calculateSpeed(int distance, double timeInterval) { //obliczanie predkosci w km/h
         double speed = (double) (distance / timeInterval) * 3.6;
@@ -121,156 +314,4 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         else if (speed < 15 * mTKm) return 14.0;
         else return 15.0;
     }
-
-    public void activityPause(View view) {
-        Button button = (Button) findViewById(R.id.pause);
-        if (data.isPause()) {
-            button.setText("włącz");
-            data.setLastKnownPosition(new Point(gps.getLoc(), true));
-        } else {
-            button.setText("wyłącz");
-            data.setLastKnownPosition(null);
-        }
-        gps.setLogHistory(data.isPause());
-        data.setPause(!data.isPause());
-    }
-
-    public void activityRecording(View view) {
-        Button button = (Button) findViewById(R.id.button);
-        if (data.isLicz() == false) {
-            //gps.cleanHistory();
-            button.setText("Stop");
-            findViewById(R.id.pause).setEnabled(true);
-            data.setLicz(true);
-
-
-            data.setLastKnownPosition(new Point(gps.getLoc(), true));
-
-            //Point prev = gps.getHistory().get(0);
-           /* for (Point i : gps.getHistory()) {
-                if (prev != i) {
-                    count(prev, i);
-                    lastKnownPosition = prev = i;
-                }
-            }*/
-
-            show();
-
-
-        } else {
-            button.setText("Licz");
-            gps.getHistoryActivity().add(data.getCalories(), data.getAverageSpeed(), data.getDistance(), data.getTime());
-            findViewById(R.id.pause).setEnabled(false);
-            ((Button) findViewById(R.id.pause)).setText("włącz");
-            data.setPause(false);
-            data.setLicz(false);
-            data.clearData();
-
-        }
-
-    }
-
-    /**
-     * wykonuje obliczenia do potrzebne do oczacowania kalorii
-     */
-    private void count(Point prev, Point next) {
-        data.add(getKcalNaKgNaSecBiegu(next.getSpeed()) * getTimeInterval(prev, next) * data.getUserWeight(),
-                calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
-                getDistanceBetweenPoints(prev, next),
-                getTimeInterval(prev, next));
-    }
-
-    /**
-     * pokazuje na ekranie wyniki
-     */
-    private void show() {
-        data.setAverageSpeed(data.getSumSpeed() / data.getPoints());
-        data.setDistance(data.getSumDistance() / 1000);
-
-        TextView kalorie = (TextView) findViewById(R.id.textView11);
-        kalorie.setText(String.format("%.0f", data.getCalories()) + " kcal");
-
-        TextView aktualnaPredkosc = (TextView) findViewById(R.id.textView12);
-        aktualnaPredkosc.setText(String.format("%.2f", data.getCurrentSpeed()) + " km/h");
-
-        TextView sredniaPredkosc = (TextView) findViewById(R.id.textView13);
-        if (Double.isNaN(data.getAverageSpeed()))
-            data.setAverageSpeed(0);
-        sredniaPredkosc.setText(String.format("%.2f", data.getAverageSpeed()) + " km/h");
-
-        TextView przebytyDystans = (TextView) findViewById(R.id.textView14);
-        przebytyDystans.setText(String.format("%.1f", data.getDistance()) + " km");
-
-        TextView czasTrwania = (TextView) findViewById(R.id.textView15);
-        String czas = secondsToTimeFormat((int) data.getTime());
-        czasTrwania.setText(czas);
-    }
-
-    String secondsToTimeFormat(int timeInterval) { //Funkcja zmieniajaca interwal czasowy wyrazony w sekundach
-        String time = "";                   //na format hh:mm:ss aktywnosci
-        int hours, minutes, seconds, pomTimeInterval = timeInterval;
-        if (timeInterval > 0) {
-            if (timeInterval % 3600 != 0) {
-                pomTimeInterval -= (timeInterval % 3600);
-                hours = pomTimeInterval / 3600;
-                if (hours < 10) {
-                    time = "0" + hours + "h";
-                } else {
-                    time = hours + "h";
-                }
-                timeInterval = timeInterval % 3600; //pozostale minuty + sekundy
-
-                if (timeInterval % 60 != 0) {
-                    pomTimeInterval = timeInterval;
-                    pomTimeInterval -= (timeInterval % 60);
-                    minutes = pomTimeInterval / 60;
-                    if (minutes < 10) {
-                        time = time + "0" + minutes + "m";
-                    } else {
-                        time = time + minutes + "m";
-                    }
-                    timeInterval = timeInterval % 60; //pozostale sekundy
-
-                    if (timeInterval < 10) {
-                        time = time + "0" + timeInterval + "s";
-                    } else {
-                        time = time + timeInterval + "s";
-                    }
-                    return time;
-                } else {
-                    minutes = timeInterval / 60;
-                    time = time + minutes + "m00s";
-                    return time;
-                }
-            } else {
-                hours = timeInterval / 3600;
-                time = hours + "hh00m00s";
-                return time;
-            }
-        } else {
-            time = "00h00m00s";
-            return time;
-        }
-    }
-
-    @Override
-    public void refresh() {
-        if (!data.isLicz()) return;
-        if (data.getLastKnownPosition() != null) {
-            data.setPoints(data.getPoints() + 1);
-            Point curPos = new Point(gps.getLoc(), true);
-
-            count(data.getLastKnownPosition(), curPos);
-            show();
-
-            data.setLastKnownPosition(curPos);
-        }
-    }
-
-    public void onStop() {
-        super.onStop();
-        //gps.delActivity(this);
-    }
-
-
 }

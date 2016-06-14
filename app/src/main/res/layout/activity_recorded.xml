@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.kuba.activitytracker.RecordedActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rodzaj aktywności:"
+        android:id="@+id/textView17"
+        android:textSize="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data aktywności: "
+        android:id="@+id/textView18"
+        android:textSize="25dp"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/textView17"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Czas trwania: "
+        android:id="@+id/textView19"
+        android:layout_marginTop="38dp"
+        android:textSize="25dp"
+        android:layout_below="@+id/textView18"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Spalone kalorie: "
+        android:id="@+id/textView20"
+        android:layout_marginTop="41dp"
+        android:textSize="25dp"
+        android:layout_below="@+id/textView19"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Średnia prędkość: "
+        android:id="@+id/textView21"
+        android:textSize="25dp"
+        android:layout_marginTop="39dp"
+        android:layout_below="@+id/textView22"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Przebyty dystans: "
+        android:id="@+id/textView22"
+        android:textSize="25dp"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/textView20"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bieganie"
+        android:id="@+id/textView23"
+        android:layout_alignTop="@+id/textView17"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14.06.16"
+        android:id="@+id/textView24"
+        android:layout_alignTop="@+id/textView18"
+        android:layout_alignRight="@+id/textView23"
+        android:layout_alignEnd="@+id/textView23"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01h05m45s"
+        android:id="@+id/textView25"
+        android:layout_alignTop="@+id/textView19"
+        android:textSize="25dp"
+        android:layout_toRightOf="@+id/textView17"
+        android:layout_toEndOf="@+id/textView17" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="654 kcal"
+        android:id="@+id/textView26"
+        android:layout_alignTop="@+id/textView20"
+        android:layout_alignRight="@+id/textView25"
+        android:layout_alignEnd="@+id/textView25"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12,1 km"
+        android:id="@+id/textView27"
+        android:layout_alignTop="@+id/textView22"
+        android:layout_alignRight="@+id/textView26"
+        android:layout_alignEnd="@+id/textView26"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8,3 km/h"
+        android:id="@+id/textView28"
+        android:layout_alignTop="@+id/textView21"
+        android:layout_alignRight="@+id/textView27"
+        android:layout_alignEnd="@+id/textView27"
+        android:textSize="25dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Podgląd trasy aktywności"
+        android:id="@+id/button5"
+        android:layout_marginBottom="31dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

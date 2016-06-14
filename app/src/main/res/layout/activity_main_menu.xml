@@ -22,26 +22,27 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rejestracja trasy"
+        android:text="Historia aktywności"
         android:id="@+id/button2"
         android:clickable="false"
         android:height="150dp"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
         android:textSize="30dp"
-        android:onClick="openMainActivity"/>
+        android:onClick="openHistoryActivity"
+        android:layout_below="@+id/button3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Statystyki aktywności"
+        android:text="Rejestrator aktywności"
         android:id="@+id/button3"
         android:height="150dp"
-        android:layout_below="@+id/button2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:textSize="30dp"
-        android:onClick="openCaloriesCounterActivity"/>
+        android:onClick="openCaloriesCounterActivity"
+        android:layout_below="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"

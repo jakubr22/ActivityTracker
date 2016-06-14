@@ -46,7 +46,6 @@ public class MainMenuActivity extends AppCompatActivity {
                 //((Button) findViewById(R.id.button3)).setEnabled(false);
                 //con=true;
                    // Thread.sleep(1000);
-
             }
     }
 
@@ -57,19 +56,18 @@ public class MainMenuActivity extends AppCompatActivity {
         setName();
     }
 
-
     public void openUserInfoActivity(View view) {
         Intent intent = new Intent(this, UserInfoActivity.class);
         startActivity(intent);
     }
 
-    public void openMainActivity(View view) {
-        Intent intent = new Intent(this, MapActivity.class);
+    public void openCaloriesCounterActivity(View view) {
+        Intent intent = new Intent(this, CaloriesCounterActivity.class);
         startActivity(intent);
     }
 
-    public void openCaloriesCounterActivity(View view) {
-        Intent intent = new Intent(this, CaloriesCounterActivity.class);
+    public void openHistoryActivity(View view) {
+        Intent intent = new Intent(this, HistoryActivity.class);
         startActivity(intent);
     }
 }

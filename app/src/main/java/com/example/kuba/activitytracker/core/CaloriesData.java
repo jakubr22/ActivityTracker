@@ -17,7 +17,7 @@ public class CaloriesData {
     private double sumSpeed = 0;
     private double time = 0;
     private double userWeight = 0;
-
+    private double iterator = 0;
 
     private static CaloriesData instance = null;
 
@@ -33,12 +33,13 @@ public class CaloriesData {
     }
 
     public void add(double calories, double currentSpeed, double sumDistance, double time) {
+        this.iterator++;
         this.calories+=calories;
         this.currentSpeed = currentSpeed;
         this.sumSpeed += this.currentSpeed;
+        this.averageSpeed = sumSpeed / iterator;
         this.sumDistance+=sumDistance;
         this.time+=time;
-
     }
 
     public void clearData() {
