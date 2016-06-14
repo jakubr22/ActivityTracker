@@ -64,4 +64,8 @@ public class Log {
     public void setNr(int nr) {
         this.nr = nr;
     }
+
+    public String getAktynowść() {
+        return aktynowść;
+    }
 }
