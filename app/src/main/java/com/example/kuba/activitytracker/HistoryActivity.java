@@ -38,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     public void activityLoading(LinearLayout layout){
         int activityNumber = sharedPreferences.getInt("activityNumber", 0);
         Set parametry;
+        String[] parametryArray;
         System.out.println("rozpoczynam ladowanie");
         if(activityNumber == 0){
             Toast toast = Toast.makeText(this,"Nie zarejestrowano jeszcze żadnej aktywności", Toast.LENGTH_LONG);
@@ -48,8 +49,9 @@ public class HistoryActivity extends AppCompatActivity {
                 parametry = sharedPreferences.getStringSet("activity"+(i+1),null);
                 if(parametry != null){
                     System.out.println("not a null");
-                    String[] parametryArray = (String[]) parametry.toArray();
-                    String message = parametryArray[0]+" "+parametryArray[1]+" "+parametryArray[4];
+                    parametryArray = new String[parametry.size()];
+                    parametry.toArray(parametryArray);
+                    String message = parametryArray[0];
                     Button button = new Button(this);
                     button.setText(message);
                     layout.addView(button);

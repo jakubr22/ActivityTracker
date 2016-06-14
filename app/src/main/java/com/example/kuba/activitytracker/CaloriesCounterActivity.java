@@ -15,6 +15,7 @@ import com.example.kuba.activitytracker.core.GPS;
 import com.example.kuba.activitytracker.core.IActivity;
 import com.example.kuba.activitytracker.core.Point;
 
+import java.sql.SQLOutput;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,6 +106,9 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
      */
     private void count(Point prev, Point next) {
         if(((RadioButton)findViewById(R.id.radioButton3)).isChecked()){
+            System.out.println(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next),getTimeInterval(prev, next))));
+            System.out.println(getTimeInterval(prev, next));
+            System.out.println(data.getUserWeight());
             data.add(getKcalNaKgNaSecBiegu(calculateSpeed(getDistanceBetweenPoints(prev, next),getTimeInterval(prev, next)))
                     * getTimeInterval(prev, next) * data.getUserWeight(),
                     calculateSpeed(getDistanceBetweenPoints(prev, next), getTimeInterval(prev, next)),
@@ -277,45 +281,45 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
 
     double getKcalNaKgNaSecBiegu(double speed) { //predkosc w km/h; zwraca nam wartosc spalanych kalorii na kg masy ciala przy podanej predkosci
         double mTKm = 1.609;
-        if (speed < 2 * mTKm) return 2.0;
-        else if (speed < 2.5 * mTKm) return 3.0;
-        else if (speed < 3 * mTKm) return 3.5;
-        else if (speed < 3.5 * mTKm) return 4.3;
-        else if (speed < 4 * mTKm) return 5.0;
-        else if (speed < 4.5 * mTKm) return 7.0;
-        else if (speed < 5 * mTKm) return 8.3;
-        else if (speed < 6 * mTKm) return 9.8;
-        else if (speed < 7 * mTKm) return 11.0;
-        else if (speed < 8 * mTKm) return 11.8;
-        else if (speed < 9 * mTKm) return 12.8;
-        else if (speed < 10 * mTKm) return 14.5;
-        else if (speed < 11 * mTKm) return 16.0;
-        else if (speed < 12 * mTKm) return 19.0;
-        else if (speed < 13 * mTKm) return 20.8;
-        else if (speed < 14 * mTKm) return 23.0;
-        else return 24.5;
+        if (speed < 2 * mTKm) return 2.0/3600;
+        else if (speed < 2.5 * mTKm) return 3.0/3600;
+        else if (speed < 3 * mTKm) return 3.5/3600;
+        else if (speed < 3.5 * mTKm) return 4.3/3600;
+        else if (speed < 4 * mTKm) return 5.0/3600;
+        else if (speed < 4.5 * mTKm) return 7.0/3600;
+        else if (speed < 5 * mTKm) return 8.3/3600;
+        else if (speed < 6 * mTKm) return 9.8/3600;
+        else if (speed < 7 * mTKm) return 11.0/3600;
+        else if (speed < 8 * mTKm) return 11.8/3600;
+        else if (speed < 9 * mTKm) return 12.8/3600;
+        else if (speed < 10 * mTKm) return 14.5/3600;
+        else if (speed < 11 * mTKm) return 16.0/3600;
+        else if (speed < 12 * mTKm) return 19.0/3600;
+        else if (speed < 13 * mTKm) return 20.8/3600;
+        else if (speed < 14 * mTKm) return 23.0/3600;
+        else return 24.5/3600;
     }
 
     double getKcalNaKgNaSecJazdyRowerem(double speed) {//predkosc w km/h
         double mTKm = 1.609;
 
-        if (speed < 5.5 * mTKm) return 3.5;
-        else if (speed < 9.4 * mTKm) return 5.8;
-        else if (speed < 12 * mTKm) return 6.8;
-        else if (speed < 14 * mTKm) return 8.0;
-        else if (speed < 16 * mTKm) return 10.0;
-        else if (speed < 19.5 * mTKm) return 12.0;
-        else return 15.8;
+        if (speed < 5.5 * mTKm) return 3.5/3600;
+        else if (speed < 9.4 * mTKm) return 5.8/3600;
+        else if (speed < 12 * mTKm) return 6.8/3600;
+        else if (speed < 14 * mTKm) return 8.0/3600;
+        else if (speed < 16 * mTKm) return 10.0/3600;
+        else if (speed < 19.5 * mTKm) return 12.0/3600;
+        else return 15.8/3600;
     }
 
     double getKcalNaKgNaSecJazdyNaRolkach(double speed) {//predkosc w km/h
         double mTKm = 1.609;
 
-        if (speed < 7 * mTKm) return 5.0;
-        else if (speed < 9 * mTKm) return 7.5;
-        else if (speed < 11 * mTKm) return 9.8;
-        else if (speed < 13 * mTKm) return 12.3;
-        else if (speed < 15 * mTKm) return 14.0;
-        else return 15.0;
+        if (speed < 7 * mTKm) return 5.0/3600;
+        else if (speed < 9 * mTKm) return 7.5/3600;
+        else if (speed < 11 * mTKm) return 9.8/3600;
+        else if (speed < 13 * mTKm) return 12.3/3600;
+        else if (speed < 15 * mTKm) return 14.0/3600;
+        else return 15.0/3600;
     }
 }
