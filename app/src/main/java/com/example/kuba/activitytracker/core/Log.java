@@ -14,9 +14,11 @@ public class Log {
     private double distance = 0;
     private double time = 0;
     private String aktynowść;
+    private static int counter = 0;
     private int nr;
 
     public Log(double calories, double averageSpeed, double distance, double time, String aktynowść) {
+        nr = counter++;
         log = GPS.getGPS().getHistory();
         this.aktynowść = aktynowść;
         this.calories = calories;
