@@ -172,7 +172,7 @@ public class CaloriesCounterActivity extends AppCompatActivity implements IActiv
         sredniaPredkosc.setText(String.format("%.2f", data.getAverageSpeed()) + " km/h");
 
         TextView przebytyDystans = (TextView) findViewById(R.id.textView14);
-        przebytyDystans.setText(String.format("%.1f", data.getDistance()) + " km");
+        przebytyDystans.setText(String.format("%.2f", data.getDistance()) + " km");
 
         /*TextView czasTrwania = (TextView) findViewById(R.id.textView15);
         String czas = secondsToTimeFormat((int) data.getTime());
