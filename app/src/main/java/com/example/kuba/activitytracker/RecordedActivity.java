@@ -1,7 +1,9 @@
 package com.example.kuba.activitytracker;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.kuba.activitytracker.core.GPS;
@@ -88,5 +90,10 @@ public class RecordedActivity extends AppCompatActivity {
             time = "00h00m00s";
             return time;
         }
+    }
+
+    public void openRecordedActivityMap(View view) {
+        Intent intent = new Intent(this, RecordedMapActivity.class);
+        startActivity(intent);
     }
 }
